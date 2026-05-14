@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger - Premium Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #e5e7eb;
+            overflow-x: hidden;
+            margin: 0;
+            user-select: none;
+        }
+
+        .bg-starfield {
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 100px 100px;
+        }
+
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .nav-btn {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-btn.active {
+            background: rgba(226, 88, 77, 0.8);
+            color: white;
+            box-shadow: 0 0 15px rgba(226, 88, 77, 0.3);
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #e2584d;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+        .payment-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .payment-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #e2584d;
+            transform: translateY(-2px);
+        }
+
+        .timer-circle {
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .method-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-starfield min-h-screen flex flex-col">
+
+    <div id="auth-container" class="fixed inset-0 z-[200] bg-[#050505] flex flex-col items-center justify-center p-4">
+        <div class="flex flex-col items-center mb-12">
+            <h1 class="text-6xl font-bold tracking-tighter text-white opacity-90">LEDGER</h1>
+            <div class="w-16 h-1 bg-[#e2584d] mt-2"></div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="glass-panel w-full max-w-md p-8 border-t-2 border-[#e2584d]">
+            <h2 class="text-xl font-bold mb-6">Welcome Back</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Username</label>
+                    <input type="text" id="login-user" placeholder="Enter username" class="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e2584d] transition text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Password</label>
+                    <input type="password" id="login-pass" placeholder="••••••••" class="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e2584d] transition text-white">
+                </div>
+                <button onclick="handleLogin()" class="w-full bg-white text-black py-3 rounded-xl font-bold hover:bg-gray-200 transition mt-4">LOG IN</button>
+                <p class="text-center text-xs text-gray-500 mt-4">
+                    New to Ledger? <button onclick="toggleAuth('register')" class="text-[#e2584d] hover:underline">Create an account</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="glass-panel w-full max-w-md p-8 border-t-2 border-[#e2584d] hidden">
+            <h2 class="text-xl font-bold mb-6">Create Account</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Username</label>
+                    <input type="text" id="reg-user" placeholder="Choose a username" class="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e2584d] transition text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Email</label>
+                    <input type="email" id="reg-email" placeholder="email@example.com" class="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e2584d] transition text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Password</label>
+                    <input type="password" id="reg-pass" placeholder="••••••••" class="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e2584d] transition text-white">
+                </div>
+                <button onclick="handleRegister()" class="w-full bg-[#e2584d] text-white py-3 rounded-xl font-bold hover:opacity-90 transition mt-4 shadow-lg shadow-[#e2584d]/20">REGISTER</button>
+                <p class="text-center text-xs text-gray-500 mt-4">
+                    Already have an account? <button onclick="toggleAuth('login')" class="text-[#e2584d] hover:underline">Log in here</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-interface" class="hidden flex-grow flex flex-col">
+        <header class="w-full py-6 flex justify-center">
+            <nav class="flex space-x-2 bg-[#121212] p-1.5 rounded-xl border border-white/5">
+                <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-btn active px-6 py-2 rounded-lg flex items-center space-x-2 text-sm font-medium">
+                    <i class="fa-solid fa-house text-xs opacity-70"></i>
+                    <span>DASHBOARD</span>
+                </button>
+                <button onclick="switchTab('products')" id="tab-products" class="nav-btn px-6 py-2 rounded-lg flex items-center space-x-2 text-sm font-medium text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-cart-shopping text-xs opacity-70"></i>
+                    <span>PRODUCTS</span>
+                </button>
+                <button onclick="switchTab('configs')" id="tab-configs" class="nav-btn px-6 py-2 rounded-lg flex items-center space-x-2 text-sm font-medium text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-cloud text-xs opacity-70"></i>
+                    <span>CLOUD CONFIGS</span>
+                </button>
+                <button onclick="logout()" class="nav-btn px-6 py-2 rounded-lg flex items-center space-x-2 text-sm font-medium text-gray-400 hover:text-red-400">
+                    <i class="fa-solid fa-right-from-bracket text-xs opacity-70"></i>
+                    <span>LOGOUT</span>
+                </button>
+            </nav>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 pb-12">
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-content fade-in">
+                <div class="flex flex-col items-center justify-center py-20">
+                    <h1 class="text-7xl font-bold tracking-tighter text-white opacity-90">LEDGER</h1>
+                    <div class="w-24 h-1 bg-[#e2584d] mt-4 opacity-50"></div>
+                </div>
+
+                <div class="glass-panel p-6 mb-6 flex items-center justify-between border-l-4 border-l-[#e2584d]">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <div class="w-12 h-12 bg-[#1a1a1a] rounded-lg border border-white/10 flex items-center justify-center overflow-hidden">
+                                 <span class="text-xs font-bold text-[#e2584d]">LEDGER</span>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0a0a0a]"></div>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Connected as</p>
+                            <h2 id="display-user" class="text-xl font-bold">User</h2>
+                        </div>
+                    </div>
+                    <button class="flex items-center space-x-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg text-sm border border-white/5 transition">
+                        <i class="fa-solid fa-gear text-gray-400"></i>
+                        <span>SETTINGS</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-panel p-6">
+                        <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-4">Unique Identifier</p>
+                        <div id="display-uid" class="text-3xl font-bold">1</div>
+                        <div class="w-full h-0.5 bg-[#e2584d]/10 mt-4 overflow-hidden">
+                            <div class="h-full bg-[#e2584d] w-1/3"></div>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Active License</p>
+                                <h3 id="display-license" class="text-lg font-bold mt-1 text-gray-400 italic">None Purchased</h3>
+                            </div>
+                            <div id="license-controls" class="flex space-x-2 text-gray-500 hidden">
+                                <i class="fa-solid fa-copy hover:text-white cursor-pointer transition" onclick="copyLicense()"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-products" class="view-content hidden fade-in">
+                <div class="flex flex-col items-center mb-8 pt-10">
+                    <h2 class="text-3xl font-bold">Available Software</h2>
+                    <p class="text-gray-500 text-sm">Select a product to begin your session.</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="glass-panel p-6 flex items-center justify-between group opacity-50 grayscale">
+                        <div>
+                            <div class="flex items-center space-x-3">
+                                <h2 class="text-2xl font-bold">Ledger Internal</h2>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">MAINTENANCE</span>
+                            </div>
+                            <p class="text-gray-500 text-sm mt-1">Version 1.0.0</p>
+                        </div>
+                        <button class="px-8 py-2.5 rounded-lg bg-white/5 text-gray-500 border border-white/5 cursor-not-allowed">LOCKED</button>
+                    </div>
+
+                    <div class="glass-panel p-6 flex items-center justify-between group">
+                        <div>
+                            <div class="flex items-center space-x-3">
+                                <h2 class="text-2xl font-bold">Ledger Script</h2>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/10 text-green-500 border border-green-500/20">STABLE</span>
+                            </div>
+                            <p class="text-gray-500 text-sm mt-1">Access to all script components.</p>
+                        </div>
+                        <div id="product-action-container">
+                            <button onclick="openPaymentModal()" class="px-8 py-2.5 rounded-lg bg-[#e2584d] text-white font-bold border border-[#e2584d]/20 hover:opacity-90 transition flex items-center space-x-3 min-w-[140px] justify-center shadow-lg shadow-[#e2584d]/20">
+                                <span>PURCHASE</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!-- Payment Selection Modal -->
+    <div id="modal-payment" class="fixed inset-0 modal-overlay backdrop-blur-md">
+        <div class="glass-panel w-full max-w-2xl p-8 border-t-2 border-[#e2584d]">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold">Select Payment Method</h2>
+                    <p class="text-gray-500 text-sm">Choose how you'd like to pay for Ledger Script.</p>
+                </div>
+                <button onclick="closeModals()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <button onclick="selectMethod('CashApp', 'fa-dollar-sign', '#00D632')" class="payment-card p-6 rounded-xl flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-dollar-sign method-icon text-[#00D632]"></i>
+                    <span class="text-xs font-bold uppercase tracking-widest">CashApp</span>
+                </button>
+                <button onclick="selectMethod('Robux', 'fa-hexagon-nodes', '#6E99E6')" class="payment-card p-6 rounded-xl flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-hexagon-nodes method-icon text-[#6E99E6]"></i>
+                    <span class="text-xs font-bold uppercase tracking-widest">Robux</span>
+                </button>
+                <button onclick="selectMethod('Bitcoin', 'fa-brands fa-bitcoin', '#F7931A')" class="payment-card p-6 rounded-xl flex flex-col items-center justify-center">
+                    <i class="fa-brands fa-bitcoin method-icon text-[#F7931A]"></i>
+                    <span class="text-xs font-bold uppercase tracking-widest">Bitcoin</span>
+                </button>
+                <button onclick="selectMethod('PayPal', 'fa-brands fa-paypal', '#003087')" class="payment-card p-6 rounded-xl flex flex-col items-center justify-center">
+                    <i class="fa-brands fa-paypal method-icon text-[#003087]"></i>
+                    <span class="text-xs font-bold uppercase tracking-widest">PayPal</span>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-1">Order Note (Optional)</label>
+                    <input type="text" id="order-note" placeholder="Discord tag or special instructions..." class="w-full bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#e2584d] transition text-white">
+                </div>
+                <button id="btn-confirm-payment" disabled class="w-full bg-white/5 text-gray-500 py-4 rounded-xl font-bold cursor-not-allowed transition">SELECT A METHOD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Modal -->
+    <div id="modal-processing" class="fixed inset-0 modal-overlay backdrop-blur-xl">
+        <div class="glass-panel w-full max-w-md p-10 flex flex-col items-center text-center">
+            <div class="relative w-32 h-32 mb-8">
+                <svg class="w-full h-full transform -rotate-90">
+                    <circle cx="64" cy="64" r="60" stroke="rgba(255,255,255,0.05)" stroke-width="8" fill="transparent" />
+                    <circle id="timer-bar" class="timer-circle" cx="64" cy="64" r="60" stroke="#e2584d" stroke-width="8" fill="transparent" stroke-dasharray="377" stroke-dashoffset="0" />
+                </svg>
+                <div id="countdown-text" class="absolute inset-0 flex items-center justify-center text-2xl font-bold">15</div>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">Awaiting Payment</h2>
+            <p class="text-gray-500 text-sm leading-relaxed mb-6">
+                Please complete your transaction. Your key will be generated automatically once the timer expires. <br>
+                <span class="text-[#e2584d] font-bold">DO NOT CLOSE THIS PAGE.</span>
+            </p>
+            <div class="w-full bg-white/5 p-4 rounded-lg flex items-center space-x-3 text-left">
+                <div id="selected-method-indicator" class="w-10 h-10 rounded bg-[#e2584d]/20 flex items-center justify-center text-[#e2584d]">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Status</p>
+                    <p class="text-xs font-bold" id="processing-status-text">Processing via CashApp...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-purchase" class="fixed inset-0 modal-overlay backdrop-blur-md">
+        <div class="glass-panel w-full max-w-md p-8 border-t-2 border-[#e2584d]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Order Confirmed</h2>
+                <button onclick="closeModals()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg mb-6">
+                <p class="text-sm text-blue-300 leading-relaxed">
+                    <i class="fa-solid fa-circle-info mr-2"></i>
+                    Your order will be done in 15 minutes. If you don't get your key, please contact support at 
+                    <span class="text-white font-bold">discord.gg/getledger</span>
+                </p>
+            </div>
+            <div class="mb-6">
+                <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest block mb-2">Your Generated Key</label>
+                <div class="bg-[#0a0a0a] border border-white/10 rounded-lg p-4 flex items-center justify-between">
+                    <code id="generated-key-display" class="text-[#e2584d] font-mono text-sm break-all">GENERATING...</code>
+                    <button onclick="copyGeneratedKey()" class="text-gray-500 hover:text-white ml-2"><i class="fa-solid fa-copy"></i></button>
+                </div>
+            </div>
+            <button onclick="closeModals()" class="w-full bg-white text-black py-3 rounded-xl font-bold">UNDERSTOOD</button>
+        </div>
+    </div>
+
+    <!-- Launcher Modal -->
+    <div id="modal-launcher" class="fixed inset-0 modal-overlay">
+        <div class="glass-panel w-full max-w-md overflow-hidden">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <span class="font-bold">Ledger Launcher</span>
+                <button onclick="closeModals()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6">
+                <button onclick="closeModals()" class="w-full bg-[#e2584d] text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-3">
+                    <i class="fa-solid fa-play text-xs"></i>
+                    <span>LAUNCH LEDGER</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const keysPool = [
+            "vrbt6c56hgbmu5naw7597pjv", "dsv8pyt3zfc7gt2h7s6qfl63", "66zvt14j5181rupyikehauyf",
+            "kulpkia1ur8z6lff3qhkhm13", "x21vtnd85hylu5e653uluw4m", "g8c9qal9zn1huoeswmbgq5vh",
+            "wib2jitirvgtq61h1snqniof", "6roxa63jhtmollz4coew44f5", "wu5camxfdehci5k4grerg1kg",
+            "9e5sdpha7vearh3s8xlikfwc", "xwnq44wykcucrx1szz9no7qj", "j4ts4rzjvgzlev4flcg28jx7",
+            "zpjrdw22wby3q14t4eggvcnj", "rce6zbo6qzyvxc2v847vuis9", "s33stwhngcbwhjudjcbanuub",
+            "jzug563u66qwgryynuzbmm4h", "n1ebla3i57ijp2913nsaszjx", "8j1ihvq1w9z9drc71bbazdab",
+            "pcp3kdpu8j6zeaz2mrvbbxtq", "xoh6x9cakwbcktnrasyk6spr", "koo2xuzroi1ozhqshwxqu4ne",
+            "wv7uvzxbe9n32dvdw3id1h1a", "95wrgobnlchnkbdo5pid5huq", "d2fo2a2k1a4m411ljcj96c6r",
+            "8d6lxdejn2sie94ecvztiu4n", "j2gc68qlgzdt18h9dtybb8ci", "clatkpu3a8gujfkj4hj6p2m1",
+            "diajo68bntss1r3ikhkoxvze", "k63145twdargpl5cqanl482p", "pc7q59s8jnp1nngksztggwlt",
+            "owh5glw5waly7nbylnc2r3z3", "k2dehhikyq44szs1qs128gke", "ziowyxjmsjsm8hqz1dka2g33",
+            "7q6yqvado68ffvhs3jbhqnaw", "nee9u5c2yoe89lcug6ag8lll", "co5htx49mbfc1dca8jmki6n2",
+            "hawc9o2glu9heg9khhpcf3fo", "9xfud931p5ehklwm5n61hvz9", "8uwmnlaqceov1nsx28e7putb",
+            "clb8mzipz6gaqrhgb6hen3mt", "b4yz4me5p7h9cj4ien858f6u", "pg7nrfc1chy4l1ufnrmbijpx",
+            "llto216p2kohv4q3i1q36ch8", "46qgkcefa96f8pag3959avp7", "v2wivgdbw4gkhun3kgfy76po",
+            "7vxedexfutdgjresffwqt94f", "jeckqk5xkk2pisgt52btop4b", "r2oj3aqy2kk7e5fatfmgalpx",
+            "aety9u5a6sfwz3tofugi1y4b", "3rkc2fkcfjkd4fprkcsdmda3", "abbh9ive1bzpi6zm299cb9wn",
+            "kg2mlzrmy1z92kj3kqnvsx9x", "ul9oklmsmyn3eqt7w8vaujwg", "c1h9ppmqnbdu5sb41m95512r",
+            "t1ng3cxo2cv7j6org2hhxhlf", "852k9u5jlayo1woncubw1jm3", "n3xg1mjtq7fdb92qebpvwbcf",
+            "hu1s3gwzfilhavn12sonxy9l", "k8odg35n6n6cdtpxliz2z3gi", "ccl5c31vhdkxv5bu7z3b23f3",
+            "rikhawpddanbjc2fjt24g9ku", "1h5guz12kk9rb5nh78rp1q9b", "l8glqmxz681w4fc1c1nusn5i",
+            "7gvr4a61ovnwj556xrmkz2el", "jhha56d7liw7xxfruvfitmin", "2oh271m2hvt3xh2vsy8647cx",
+            "pcqhjm6mr8vbibuihrso3cwv", "j8fj9cybqh58jvfdkz3duld3", "5iet5sm6a2m6rhtgstej9za6",
+            "b9peez11xcbixwsy3n8yrnvj", "qk8waufhm3q4fq21we2ev4b8", "xcazelx32ip6lcdl87ue3wd6",
+            "bslceevk155wzkwm2f4munec", "kj7ww2neep23fj7can1rf79m", "92eydutbuxgfkik7zlyemgkq",
+            "f7ng47lksm4xt527w69z88vr", "pku5pbpwnn23alyoyp1ypah7", "bfl89swwq9lmm6wk4kgq3rfy",
+            "afx81cnar8n4qf99ir4v129q", "iflma6qscstfp5mbe1i4q3mh", "ivobszz1locv4bsoer7n3nnc",
+            "1lohaeggx127hx8i671swao3", "29xrxnbik6s2nci16mg44ftw", "lolwnn5ulhav8hm4cep6tcm8",
+            "ngkdxviky3kykvpnnaqsfpfl", "h2br4poqzfz6jfadwz9jgtja", "bm96s1wul24tmavei2fs3fsy",
+            "jf6gus3ha48o4c4rhncp7o5y", "gzhepe7qetpys4jdbgygf3br", "9c3jlxct3lobnbi3wxzztjeq",
+            "lwtnwfwz9a33at2coqb1nc21", "8izelc6eqbtdjkvgn4rijpdl", "bkfvl8liw7torpkgpbdep77p",
+            "xnucbohhzh5u45kgor6guunr", "wvvdk5twi4qhtc34vobcekc8", "1x6lsierri65h4nnfkyy563k",
+            "jpcng1djrcbhi64iezk1b3r6", "iz6mzm4a9ofe82cyig92868n", "48vxh2lj6aldgulqufjxnzpe",
+            "6mqsf3nlxe2s4nvfgve4iyu4"
+        ];
+
+        let currentUser = null;
+        let currentLicense = null;
+        let selectedPaymentMethod = null;
+        let countdownValue = 15; 
+        let timerInterval = null;
+
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1503833521972576326/txzJJoqrpxP6Gooogw9-er9X9BDEF7VnFQRHa0yMDvppZz0jeNy2Da-AaoYiWXT3Zu3v"; 
+
+        function toggleAuth(type) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            if (type === 'register') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            } else {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            }
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+            if (user && pass) {
+                loginSuccess(user);
+            } else {
+                alert("Please enter both username and password.");
+            }
+        }
+
+        function handleRegister() {
+            const user = document.getElementById('reg-user').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            if (user && email && pass) {
+                loginSuccess(user);
+                switchTab('products'); // Take them straight to products as requested
+            } else {
+                alert("Please fill in all registration fields.");
+            }
+        }
+
+        function loginSuccess(username) {
+            currentUser = username;
+            document.getElementById('display-user').innerText = username;
+            document.getElementById('display-uid').innerText = Math.floor(Math.random() * 9000) + 1000;
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('main-interface').classList.remove('hidden');
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('main-interface').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-white');
+                btn.classList.add('text-gray-400');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active', 'text-white');
+
+            // Update Views
+            document.querySelectorAll('.view-content').forEach(view => view.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+        }
+
+        function addConfig() {
+            const input = document.getElementById('config-name-input');
+            const name = input.value.trim();
+            if (!name) return;
+
+            const library = document.getElementById('config-library');
+            const countEl = document.getElementById('config-count');
+            
+            const currentCount = parseInt(countEl.innerText.split('/')[0]);
+            if (currentCount >= 10) return;
+
+            const date = new Date().toLocaleDateString('en-GB');
+            const newConfig = document.createElement('div');
+            newConfig.className = "bg-white/5 p-4 rounded-lg border border-white/5 hover:border-white/10 transition cursor-pointer";
+            newConfig.innerHTML = `
+                <h4 class="font-bold text-sm text-white">${name}</h4>
+                <p class="text-[10px] text-gray-500 mt-1">${date}</p>
+            `;
+
+            library.prepend(newConfig);
+            input.value = "";
+            countEl.innerText = `${currentCount + 1}/10`;
+        }
+
+        function openPaymentModal() {
+            document.getElementById('modal-payment').style.display = 'flex';
+        }
+
+        function selectMethod(method, icon, color) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-card').forEach(card => {
+                card.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                card.style.background = 'rgba(255, 255, 255, 0.03)';
+            });
+            
+            const btn = event.currentTarget;
+            btn.style.borderColor = color;
+            btn.style.background = `${color}10`;
+
+            const confirmBtn = document.getElementById('btn-confirm-payment');
+            confirmBtn.disabled = false;
+            confirmBtn.classList.remove('bg-white/5', 'text-gray-500', 'cursor-not-allowed');
+            confirmBtn.classList.add('bg-white', 'text-black');
+            confirmBtn.innerText = `PAY WITH ${method.toUpperCase()}`;
+            confirmBtn.onclick = startProcessing;
+        }
+
+        async function startProcessing() {
+            const note = document.getElementById('order-note').value || "No note provided";
+            closeModals();
+            
+            // Setup Processing UI
+            document.getElementById('modal-processing').style.display = 'flex';
+            document.getElementById('processing-status-text').innerText = `Processing via ${selectedPaymentMethod}...`;
+            
+            // Send Initial Webhook (Log interest/intent)
+            sendWebhook(`🛒 Purchase Started`, `User **${currentUser}** started payment via **${selectedPaymentMethod}**.\nNote: *${note}*`);
+
+            // Start Timer
+            countdownValue = 15;
+            const bar = document.getElementById('timer-bar');
+            const text = document.getElementById('countdown-text');
+            const total = 377; // stroke-dasharray
+
+            timerInterval = setInterval(() => {
+                countdownValue--;
+                text.innerText = countdownValue;
+                
+                const offset = total - (total * (15 - countdownValue) / 15);
+                bar.style.strokeDashoffset = total - offset;
+
+                if(countdownValue <= 0) {
+                    clearInterval(timerInterval);
+                    finalizePurchase(note);
+                }
+            }, 1000);
+        }
+
+        function finalizePurchase(note) {
+            const randomIndex = Math.floor(Math.random() * keysPool.length);
+            currentLicense = keysPool[randomIndex];
+            
+            // Update UI
+            document.getElementById('generated-key-display').innerText = currentLicense;
+            closeModals();
+            document.getElementById('modal-purchase').style.display = 'flex';
+            
+            // Update Dashboard
+            document.getElementById('display-license').innerText = `Ledger-${currentLicense.substring(0, 10)}...`;
+            document.getElementById('display-license').classList.remove('text-gray-400', 'italic');
+            document.getElementById('license-controls').classList.remove('hidden');
+
+            const actionContainer = document.getElementById('product-action-container');
+            actionContainer.innerHTML = `
+                <button onclick="openLauncher()" class="px-8 py-2.5 rounded-lg bg-white/5 text-white font-bold border border-white/10 hover:bg-white/10 transition flex items-center space-x-3 min-w-[140px] justify-center">
+                    <span>LAUNCH</span>
+                </button>
+            `;
+
+            // Send Final Webhook
+            sendWebhook(`✅ Purchase Completed`, 
+                `**User:** ${currentUser}\n` +
+                `**Method:** ${selectedPaymentMethod}\n` +
+                `**Key:** \`${currentLicense}\`\n` +
+                `**Note:** ${note}`
+            );
+        }
+
+        async function sendWebhook(title, description) {
+            if(!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "") return;
+
+            const payload = {
+                embeds: [{
+                    title: title,
+                    description: description,
+                    color: 14833741, // #e2584d in decimal
+                    timestamp: new Date().toISOString(),
+                    footer: { text: "Ledger Dashboard Logs" }
+                }]
+            };
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error("Webhook failed:", e);
+            }
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        }
+
+        function copyGeneratedKey() {
+            copyToClipboard(currentLicense);
+        }
+
+        function copyLicense() {
+            copyToClipboard(currentLicense);
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) closeModals();
+        }
+    </script>
+</body>
+</html>
