@@ -1,0 +1,320 @@
+shared.Ledger = {
+    -- ==================== CORE SETTINGS ====================
+    ['Core'] = {
+        ['TargetAim'] = true,
+        ['KnockCheck'] = false,
+        ['VisibleCheck'] = false,
+        ['TeamCheck'] = false,
+        ['FriendCheck'] = false,
+        ['StreamProof'] = true,
+        ['PanicKey'] = "P",
+    },
+
+    -- ==================== KEYBINDS ====================
+    ['Keys'] = {
+        ['Lock'] = {['Key'] = "E", ['Mode'] = "Toggle"},
+        ['Trigger'] = {['Key'] = "T", ['Mode'] = "Toggle"},
+        ['Speed'] = "Q",
+        ['SuperJump'] = "V",
+        ['InfiniteRange'] = "N",
+        ['BulletTP'] = "X",
+        ['Aimbot'] = "F",
+        ['ESP'] = "G",
+        ['AntiAim'] = "U",
+        ['Fly'] = "B",
+        ['NoClip'] = "M",
+        ['ThirdPerson'] = "H",
+    },
+
+    -- ==================== AIMBOT FEATURES ====================
+    ['SilentAim'] = {
+        ['Enabled'] = true,
+        ['HitPart'] = "HumanoidRootPart",
+        ['UsePrediction'] = false,
+        ['Prediction'] = {['X'] = 0, ['Y'] = 0, ['Z'] = 0},
+        ['FOV'] = 200,
+        ['ShowFOV'] = true,
+        ['FOVColor'] = Color3.fromRGB(255, 85, 127),
+        ['TargetSwitchDelay'] = 0.5,
+        ['VisibleCheck'] = true,
+        ['Wallbang'] = false,
+    },
+    
+    ['Aimbot'] = {
+        ['Enabled'] = false,
+        ['HitPart'] = "Head",
+        ['Smoothing'] = 0.08,
+        ['Prediction'] = 0.133,
+        ['FOV'] = 150,
+        ['ShowFOV'] = false,
+        ['LockOnKey'] = "F",
+        ['HoldKey'] = false,
+        ['RCS'] = true,
+        ['RCSPitch'] = 15,
+        ['RCSYaw'] = 15,
+    },
+
+    ['CameraLock'] = {
+        ['Enabled'] = true,
+        ['HitPart'] = "Closest Part",
+        ['Smoothing'] = 15,
+        ['UsePrediction'] = true,
+        ['Prediction'] = 0.133,
+        ['ThirdPerson'] = false,
+        ['ThirdPersonDistance'] = 10,
+    },
+
+    ['TriggerBot'] = {
+        ['Enabled'] = true,
+        ['Delay'] = 0.05,
+        ['HitChance'] = 95,
+        ['SpecificWeapons'] = {
+            ['Enabled'] = false,
+            ['Weapons'] = {"[Double-Barrel SG]", "[Revolver]", "[TacticalShotgun]"},
+        },
+    },
+
+    -- ==================== MOVEMENT FEATURES ====================
+    ['Speed'] = {
+        ['Enabled'] = true,
+        ['Multiplier'] = 54,
+        ['AntiFling'] = false,
+        ['AirAcceleration'] = true,
+        ['InstantStop'] = false,
+    },
+
+    ['SuperJump'] = {
+        ['Enabled'] = true,
+        ['Power'] = 260,
+        ['Cooldown'] = 0.1,
+        ['Infinite'] = false,
+    },
+
+    ['Fly'] = {
+        ['Enabled'] = false,
+        ['Key'] = "B",
+        ['Speed'] = 50,
+        ['Hold'] = false,
+    },
+
+    ['NoClip'] = {
+        ['Enabled'] = false,
+        ['Key'] = "M",
+    },
+
+    ['SpinBot'] = {
+        ['Enabled'] = false,
+        ['Key'] = "J",
+        ['Speed'] = 360,
+    },
+
+    ['BHop'] = {
+        ['Enabled'] = false,
+        ['AutoStrafe'] = true,
+    },
+
+    ['AntiAim'] = {
+        ['Enabled'] = false,
+        ['Key'] = "U",
+        ['Mode'] = "Spin", -- Spin, Jitter, Sideways, Backwards, Down
+        ['Yaw'] = 180,
+        ['Pitch'] = 0,
+    },
+
+    -- ==================== WEAPON FEATURES ====================
+    ['RapidFire'] = {
+        ['Enabled'] = true,
+        ['Delay'] = 0.01,
+        ['SpecificWeapons'] = {
+            ['Enabled'] = true,
+            ['Weapons'] = {"[Revolver]", "[Double-Barrel SG]"},
+        },
+    },
+
+    ['BulletTP'] = {
+        ['Enabled'] = true,
+        ['Key'] = "X",
+        ['Mode'] = "Target", -- Target, Mouse, Nearest
+        ['Speed'] = 500,
+        ['IgnoreWalls'] = true,
+    },
+
+    ['InfiniteRange'] = {
+        ['Enabled'] = true,
+        ['Key'] = "N",
+        ['MaxRange'] = 100000,
+    },
+
+    ['NoSpread'] = {
+        ['Enabled'] = true,
+        ['Amount'] = 0,
+        ['SpecificWeapons'] = {
+            ['Enabled'] = true,
+            ['Weapons'] = {"[Double-Barrel SG]", "[TacticalShotgun]"},
+        },
+    },
+
+    ['NoRecoil'] = {
+        ['Enabled'] = true,
+        ['Amount'] = 0,
+    },
+
+    ['InstantReload'] = {
+        ['Enabled'] = false,
+        ['Key'] = "R",
+    },
+
+    ['MuzzleBrake'] = {
+        ['Enabled'] = false,
+        ['Reduce'] = 50,
+    },
+
+    ['HitboxExpander'] = {
+        ['Enabled'] = true,
+        ['Size'] = 15,
+        ['Transparency'] = 0.5,
+        ['Multiplier'] = 1.5,
+    },
+
+    -- ==================== VISUAL FEATURES ====================
+    ['ESP'] = {
+        ['Enabled'] = true,
+        ['Key'] = "G",
+        ['Color'] = Color3.fromRGB(50, 205, 50),
+        ['TargetColor'] = Color3.fromRGB(255, 0, 0),
+        ['Box'] = true,
+        ['Name'] = true,
+        ['Health'] = true,
+        ['Distance'] = true,
+        ['Weapon'] = true,
+        ['Skeleton'] = false,
+        ['HeadDot'] = false,
+        ['Tracer'] = false,
+        ['Chams'] = false,
+        ['Glow'] = false,
+    },
+
+    ['FOV'] = {
+        ['Enabled'] = true,
+        ['Visible'] = true,
+        ['Size'] = Vector2.new(2000, 2000),
+        ['Thickness'] = 2,
+        ['Color'] = Color3.fromRGB(255, 255, 255),
+        ['Style'] = "Circle", -- Circle, Box, Crosshair
+    },
+
+    ['TargetLine'] = {
+        ['Enabled'] = true,
+        ['Color'] = Color3.fromRGB(255, 85, 127),
+        ['Thickness'] = 2,
+        ['Style'] = "Line", -- Line, Dot, Arrow
+    },
+
+    ['Crosshair'] = {
+        ['Enabled'] = true,
+        ['Color'] = Color3.fromRGB(255, 255, 255),
+        ['Size'] = 10,
+        ['Thickness'] = 2,
+        ['Gap'] = 2,
+    },
+
+    ['Watermark'] = {
+        ['Enabled'] = true,
+        ['Text'] = "LEDGER INTERNAL",
+        ['Color'] = Color3.fromRGB(255, 85, 127),
+    },
+
+    ['KillFeed'] = {
+        ['Enabled'] = true,
+        ['Style'] = "Modern",
+        ['Duration'] = 3,
+    },
+
+    ['HitMarker'] = {
+        ['Enabled'] = true,
+        ['Sound'] = true,
+        ['Color'] = Color3.fromRGB(255, 0, 0),
+        ['Size'] = 15,
+    },
+
+    ['DamageIndicator'] = {
+        ['Enabled'] = true,
+        ['Duration'] = 0.5,
+        ['Color'] = Color3.fromRGB(255, 85, 127),
+    },
+
+    ['Skybox'] = {
+        ['Enabled'] = false,
+        ['Type'] = "Night", -- Day, Night, Sunset, Neon, BloodMoon
+    },
+
+    ['WorldMods'] = {
+        ['FullBright'] = false,
+        ['Chams'] = false,
+        ['Wireframe'] = false,
+        ['RemoveFog'] = false,
+        ['RemoveTrees'] = false,
+    },
+
+    -- ==================== UTILITY FEATURES ====================
+    ['InventorySorter'] = {
+        ['Enabled'] = true,
+        ['Key'] = "L",
+        ['Slot1'] = "[Double-Barrel SG]",
+        ['Slot2'] = "[Revolver]",
+        ['Slot3'] = "[TacticalShotgun]",
+        ['Slot4'] = "[Knife]",
+        ['Slot5'] = "[AR]",
+        ['Slot6'] = "[SMG]",
+        ['Slot7'] = "[Pistol]",
+    },
+
+    ['AmmoHack'] = {
+        ['Enabled'] = false,
+        ['Amount'] = 9999,
+    },
+
+    ['AutoHeal'] = {
+        ['Enabled'] = false,
+        ['HealthPercent'] = 50,
+    },
+
+    ['AutoBuy'] = {
+        ['Enabled'] = false,
+        ['Items'] = {"[Revolver]", "[Double-Barrel SG]", "[TacticalShotgun]"},
+    },
+
+    ['Spammer'] = {
+        ['Enabled'] = false,
+        ['Message'] = "Ledger Internal is the best!",
+        ['Delay'] = 5,
+    },
+
+    ['VoiceSpammer'] = {
+        ['Enabled'] = false,
+        ['Message'] = "GET DESTROYED!",
+    },
+
+    ['SafeMode'] = {
+        ['Enabled'] = false,
+        ['Key'] = "F12",
+        ['DisableAll'] = true,
+    },
+
+    ['ConfigSave'] = {
+        ['Enabled'] = true,
+        ['Key'] = "F11",
+        ['AutoLoad'] = true,
+    },
+
+    -- ==================== SKIN FEATURES ====================
+    ['SkinChanger'] = {
+        ['Enabled'] = false,
+        ['Revolver'] = "Shadow",
+        ['Shotgun'] = "Galaxy",
+        ['Tactical'] = "Inferno",
+        ['DoubleBarrel'] = "Golden Age",
+        ['AR'] = "Matrix",
+        ['Knife'] = "GPO Knife-Prestige",
+    },
+}
